@@ -66,7 +66,7 @@ class FileStorage:
                 del self.__objects[key]
 
     def get(self, cls, id):
-        """Retrieves one object."""
+        """Retrieve one object."""
         for clss in classes.values():
             if issubclass(cls, clss):
                 for obj in self.all(clss).values():
@@ -75,7 +75,7 @@ class FileStorage:
         return None
 
     def count(self, cls=None):
-        """Counts the number of objects in storage."""
+        """Count the number of objects in storage."""
         if cls is None:
             return len(self.all())
         elif cls in classes.values():
