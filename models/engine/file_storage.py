@@ -1,5 +1,7 @@
 #!/usr/bin/python3
-"""Contains the FileStorage class."""
+"""
+Contains the FileStorage class.
+"""
 
 import json
 from models.amenity import Amenity
@@ -63,31 +65,25 @@ class FileStorage:
             if key in self.__objects:
                 del self.__objects[key]
 
-    def close(self):
-        """Call reload() method for deserializing the JSON file to objects."""
-        self.reload()
-
     def get(self, cls, id):
-        """Retrieve one object based on class and ID."""
-        if cls in classes.values():
-            return self.__objects.get(f"{cls.__name__}.{id}", None)
+        """Retrieves one object."""
+        for clss in classes.values():
+            if issubclass(cls, clss):
+                for obj in self.all(clss).values():
+                    if obj.id == id:
+                        return obj
         return None
 
     def count(self, cls=None):
-        """Count the number of objects in storage matching the given class."""
+        """Counts the number of objects in storage."""
         if cls is None:
-            return len(self.__objects)
+            return len(self.all())
+        elif cls in classes.values():
+            return len(self.all(cls))
+        else:
+            return 0
 
-        # Create a dictionary to count occurrences of each class
-        class_count = {}
-        for key in self.__objects:
-            obj_class_name = key.split('.')[0]  # Get class name from the key
-            if obj_class_name in class_count:
-                class_count[obj_class_name] += 1
-            else:
-                class_count[obj_class_name] = 1
-        # Return the count for the specified class
-        if cls.__name__ in class_count:
-            return class_count[cls.__name__]
 
-        return 0
+    def close(self):
+        """Call reload() method for deserializing the JSON file to objects."""
+        self.reload()
